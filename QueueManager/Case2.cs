@@ -29,8 +29,9 @@ namespace QueueManager
                     {
                         ITaskResult taskResult = processTask.Execute(x, y).Result;
                         return taskResult;
-                    });
+                    }, TaskCreationOptions.PreferFairness);
                     queueManger.AddInQueue(queuekey, t);
+                    Console.WriteLine($"Task id:{Task.CurrentId} waiting...");
                     t.Wait();
                     if (t.IsCompleted)
                     {
@@ -38,7 +39,7 @@ namespace QueueManager
                     }
                 });
             }
-
+            // queueManger.StartQueue(queuekey);
 
 
         }

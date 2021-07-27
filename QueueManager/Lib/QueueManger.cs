@@ -47,6 +47,7 @@ namespace QueueManager.Lib
                                 {
                                     return t;
                                 });
+
                                 t.Start();
                             }
                             else
@@ -78,6 +79,7 @@ namespace QueueManager.Lib
         {
             var queueTask = new Task(() =>
             {
+                System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.AboveNormal;
                 //執行Queue 裡面的task
                 ConcurrentQueue<Task<ITaskResult>> _queue;
                 if (_PublicQueue.Value.TryGetValue(queueKey, out _queue))
