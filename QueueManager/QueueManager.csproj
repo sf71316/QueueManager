@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Case1.cs" />
+    <Compile Include="Case2.cs" />
     <Compile Include="ITaskResult.cs" />
+    <Compile Include="Lib\ProcessTask.cs" />
     <Compile Include="Lib\QueueManger.cs" />
     <Compile Include="Lib\TaskResult.cs" />
     <Compile Include="Program.cs" />

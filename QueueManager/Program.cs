@@ -10,9 +10,10 @@ namespace QueueManager
     {
         static void Main(string[] args)
         {
-            Case1 c1 = new Case1();
+            var c = new Case2();
+            //var c = new Case1();
 
-            c1.Execute();
+            c.Execute();
             var ss = Console.ReadLine();
         }
     }
