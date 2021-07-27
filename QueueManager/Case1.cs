@@ -7,34 +7,43 @@ using System.Threading.Tasks;
 
 namespace QueueManager
 {
-    class Case1
+    /// <summary>
+    /// 測試Queue 是否照安排依序執行
+    /// </summary>
+    public class Case1
     {
         public void Execute()
         {
-            Lib.QueueManger queueManger = new QueueManger();
+            QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
-            int taskCount = 20;
-            var queuekeys = new string[] { "test", "test2" };
-            for (int i = 0; i < taskCount; i++)
+            string[] queuekey = new string[] { "test", "222" };
+            int processCount = 20;
+            queueManger.EnableAddQueueProcess = false;
+            for (int i = 0; i < processCount; i++)
             {
-                Random rnd2 = new Random(Guid.NewGuid().GetHashCode());
-                var queuekey = rnd2.Next(0, 2);
-                var t = new Task<ITaskResult>(() =>
+                var task = new Task<ITaskResult>(() =>
                 {
                     Random rnd = new Random(Guid.NewGuid().GetHashCode());
-                    var timesleep = rnd.Next(1, 5) * 100;
-                    TaskResult tr = new TaskResult();
-                    Console.WriteLine($"Process taskid:{Task.CurrentId} ");
-                    Console.WriteLine($"Process.....{timesleep} ms");
-                    System.Threading.Thread.Sleep(timesleep);
-                    Console.WriteLine($"Process id:{Task.CurrentId}.....{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff")} End");
+                    var tr = new TaskResult();
+                    int pt = rnd.Next(1, 11);
+                    Console.WriteLine($"[TaskID:{Task.CurrentId}] Process task ");
+                    Console.WriteLine($"processing......{pt * 100}ms");
+                    System.Threading.Thread.Sleep(pt * 100);
+                    Console.WriteLine($"[TaskID:{Task.CurrentId}] Process task finish");
                     return tr;
                 });
-                //Console.WriteLine($"{queuekey}");
-                queueManger.AddInQueue(queuekeys[queuekey], t);
-
+                var qk = "";
+                if (i < 10)
+                    qk = queuekey[0];
+                else
+                    qk = queuekey[1];
+                queueManger.AddInQueue(qk, task);
+                Console.WriteLine($"add task in queue [{qk}]");
             }
-            //queueManger.StartQueue("test");
+
+            queueManger.StartQueue(queuekey[0]);
+            queueManger.StartQueue(queuekey[1]);
+
         }
 
         private void QueueManger_Notify(object sender, MessageArg e)

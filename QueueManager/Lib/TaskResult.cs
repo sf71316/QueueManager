@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QueueManager.Lib
 {
-    class TaskResult : ITaskResult
+    public class TaskResult : ITaskResult
     {
         public bool IsComplete { get; set; }
-        public int Message { get; set; }
+        public string message { get; set; }
     }
 }

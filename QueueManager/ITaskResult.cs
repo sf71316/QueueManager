@@ -9,6 +9,6 @@ namespace QueueManager
     public interface ITaskResult
     {
         bool IsComplete { get; set; }
-        int Message { get; set; }
+        string message { get; set; }
     }
 }

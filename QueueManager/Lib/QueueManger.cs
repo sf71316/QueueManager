@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QueueManager.Lib
 {
-    class QueueManger
+    public class QueueManger
     {
         //QueueGroup 的Queue
         static Lazy<ConcurrentDictionary<string, ConcurrentQueue<Task<ITaskResult>>>> _PublicQueue =
@@ -15,58 +15,62 @@ namespace QueueManager.Lib
         //執行QueueGroup 的Task
         static Lazy<ConcurrentDictionary<string, Task>> _PublicPoolTask =
             new Lazy<ConcurrentDictionary<string, Task>>();
-
+        public bool EnableAddQueueProcess { get; set; } = true;
         public void StartQueue(string queueKey)
         {
             //當queuetask 不存在時建立一個task 並執行
             //當queuetask 存在時且Task status 非WaitingForActivation,WaitingToRun,Running 需啟動Task
-            if (_PublicPoolTask.Value.ContainsKey(queueKey))
+            //用lock 確保每個queuekey開會task 只會有一個
+            lock (_PublicPoolTask)
             {
-                Task queueTask;
-                if (_PublicPoolTask.Value.TryGetValue(queueKey, out queueTask))
+                if (_PublicPoolTask.Value.ContainsKey(queueKey))
                 {
-                    //當QueueTask 未啟動時，則啟動task
-                    if (new TaskStatus[] { TaskStatus.Created }
-                    .Any(p => p == queueTask.Status))
+                    Task queueTask;
+                    if (_PublicPoolTask.Value.TryGetValue(queueKey, out queueTask))
                     {
-                        queueTask.Start();
-                    }
-                    //當QueueTask 為以下狀態時則取代問前Task
-                    else if (new TaskStatus[] { TaskStatus.Canceled,TaskStatus.Faulted,
+                        //當QueueTask 未啟動時，則啟動task
+                        if (new TaskStatus[] { TaskStatus.Created }
+                        .Any(p => p == queueTask.Status))
+                        {
+                            queueTask.Start();
+                        }
+                        //當QueueTask 為以下狀態時則取代問前Task
+                        else if (new TaskStatus[] { TaskStatus.Canceled,TaskStatus.Faulted,
                         TaskStatus.RanToCompletion,TaskStatus.WaitingForActivation
                     ,}
-                    .Any(p => p == queueTask.Status))
-                    {
-                        if (_PublicPoolTask.Value.TryRemove(queueKey, out queueTask))
+                        .Any(p => p == queueTask.Status))
                         {
-                            var t = GetQueueTask(queueKey);
-                            _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
+                            if (_PublicPoolTask.Value.TryRemove(queueKey, out queueTask))
                             {
-                                return t;
-                            });
-                            t.Start();
-                        }
-                        else
-                        {
-                            this.OnNotify("處理佇列排程移除失敗");
+                                var t = GetQueueTask(queueKey);
+                                _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
+                                {
+                                    return t;
+                                });
+                                t.Start();
+                            }
+                            else
+                            {
+                                this.OnNotify("處理佇列排程移除失敗");
+                            }
                         }
                     }
+                    else
+                    {
+                        this.OnNotify("加入處理佇列排程取得失敗");
+                    }
+
                 }
                 else
                 {
-                    this.OnNotify("加入處理佇列排程取得失敗");
+
+                    var t = GetQueueTask(queueKey);
+                    _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
+                    {
+                        return t;
+                    });
+                    t.Start();
                 }
-
-            }
-            else
-            {
-
-                var t = GetQueueTask(queueKey);
-                _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
-                {
-                    return t;
-                });
-                t.Start();
             }
 
         }
@@ -100,7 +104,8 @@ namespace QueueManager.Lib
                      return new ConcurrentQueue<Task<ITaskResult>>();
                  }));
             _queue.Enqueue(task);
-            StartQueue(queueKey);
+            if (EnableAddQueueProcess)
+                StartQueue(queueKey);
         }
 
         private void OnNotify(string message)
