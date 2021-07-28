@@ -11,7 +11,7 @@ namespace QueueManager.Lib
         public async Task<ITaskResult> Execute(int x, int y)
         {
             await Task.Delay(300);
-            Console.WriteLine($"{x}+{y}={x + y}");
+           // Console.WriteLine($"{x}+{y}={x + y}");
             TaskResult tr = new TaskResult();
             tr.IsComplete = true;
             tr.message = $"{x + y}";

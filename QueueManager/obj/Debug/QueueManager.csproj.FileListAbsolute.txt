@@ -5,3 +5,10 @@ E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.AssemblyRefer
 E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CoreCompileInputs.cache
 E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.exe
 E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.pdb
+D:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.exe.config
+D:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.exe
+D:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.pdb
+D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csprojAssemblyReference.cache
+D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CoreCompileInputs.cache
+D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.exe
+D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.pdb

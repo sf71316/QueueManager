@@ -3,9 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 
 namespace QueueManager.Lib
 {
@@ -15,63 +13,73 @@ namespace QueueManager.Lib
         static Lazy<ConcurrentDictionary<string, ConcurrentQueue<Task<ITaskResult>>>> _PublicQueue =
             new Lazy<ConcurrentDictionary<string, ConcurrentQueue<Task<ITaskResult>>>>();
         //執行QueueGroup 的Task
-        static Lazy<ConcurrentBag<string>> _PublicPoolTask =
-            new Lazy<ConcurrentBag<string>>();
-        public bool EnableAddQueueAutoProcess { get; set; } = true;
+        static Lazy<ConcurrentDictionary<string, Task>> _PublicPoolTask =
+            new Lazy<ConcurrentDictionary<string, Task>>();
+        public bool EnableAddQueueProcess { get; set; } = true;
         public void StartQueue(string queueKey)
         {
-
             //當queuetask 不存在時建立一個task 並執行
             //當queuetask 存在時且Task status 非WaitingForActivation,WaitingToRun,Running 需啟動Task
             //用lock 確保每個queuekey開會task 只會有一個
-            lock (_PublicPoolTask.Value)
+            lock (_PublicPoolTask)
             {
-                if (!_PublicPoolTask.Value.Contains(queueKey))
+                if (_PublicPoolTask.Value.ContainsKey(queueKey))
                 {
-                    _PublicPoolTask.Value.Add(queueKey);
-                    ProcessQueue(queueKey);
-                }
-
-            }
-
-        }
-        private void ProcessQueue(string queueKey)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
-            {
-                //執行Queue 裡面的task
-                ConcurrentQueue<Task<ITaskResult>> _queue;
-                if (_PublicQueue.Value.TryGetValue(queueKey, out _queue))
-                {
-                    while (!_queue.IsEmpty)
+                    Task queueTask;
+                    if (_PublicPoolTask.Value.TryGetValue(queueKey, out queueTask))
                     {
-                        Task<ITaskResult> _task;
-                        if (_queue.TryDequeue(out _task))
+                        //當QueueTask 未啟動時，則啟動task
+                        if (new TaskStatus[] { TaskStatus.Created }
+                        .Any(p => p == queueTask.Status))
                         {
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.WriteLine($"Process queue key [{queueKey}] task id {Thread.CurrentThread.ManagedThreadId}");
-                            _task.Start();
-                            _task.Wait();
+                            queueTask.Start();
                         }
-                    }
-                    if (!_PublicPoolTask.Value.TryTake(out queueKey))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"移除QueueTask 失敗");
+                        //當QueueTask 為以下狀態時則取代問前Task
+                        else if (new TaskStatus[] { TaskStatus.Canceled,TaskStatus.Faulted,
+                        TaskStatus.RanToCompletion,TaskStatus.WaitingForActivation
+                    ,}
+                        .Any(p => p == queueTask.Status))
+                        {
+                            if (_PublicPoolTask.Value.TryRemove(queueKey, out queueTask))
+                            {
+                                var t = GetQueueTask(queueKey);
+                                _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
+                                {
+                                    return t;
+                                });
+
+                                t.Start();
+                            }
+                            else
+                            {
+                                this.OnNotify("處理佇列排程移除失敗");
+                            }
+                        }
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"移除QueueTask 成功");
+                        this.OnNotify("加入處理佇列排程取得失敗");
                     }
+
                 }
-            }));
+                else
+                {
+
+                    var t = GetQueueTask(queueKey);
+                    _PublicPoolTask.Value.AddOrUpdate(queueKey, t, (s, t1) =>
+                    {
+                        return t;
+                    });
+                    t.Start();
+                }
+            }
 
         }
         private Task GetQueueTask(string queueKey)
         {
             var queueTask = new Task(() =>
             {
+                System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.AboveNormal;
                 //執行Queue 裡面的task
                 ConcurrentQueue<Task<ITaskResult>> _queue;
                 if (_PublicQueue.Value.TryGetValue(queueKey, out _queue))
@@ -81,7 +89,6 @@ namespace QueueManager.Lib
                         Task<ITaskResult> _task;
                         if (_queue.TryDequeue(out _task))
                         {
-                            Console.ForegroundColor = ConsoleColor.Blue;
                             Console.WriteLine($"Queue key [{queueKey}] task id {Task.CurrentId}");
                             _task.Start();
                             _task.Wait();
@@ -99,7 +106,7 @@ namespace QueueManager.Lib
                      return new ConcurrentQueue<Task<ITaskResult>>();
                  }));
             _queue.Enqueue(task);
-            if (EnableAddQueueAutoProcess)
+            if (EnableAddQueueProcess)
                 StartQueue(queueKey);
         }
 

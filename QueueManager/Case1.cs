@@ -18,7 +18,7 @@ namespace QueueManager
             queueManger.Notify += QueueManger_Notify;
             string[] queuekey = new string[] { "test", "222" };
             int processCount = 20;
-            queueManger.EnableAddQueueProcess = false;
+            queueManger.EnableAddQueueAutoProcess = false;
             for (int i = 0; i < processCount; i++)
             {
                 var task = new Task<ITaskResult>(() =>

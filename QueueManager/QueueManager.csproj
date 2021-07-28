@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Case1.cs" />
     <Compile Include="Case2.cs" />
+    <Compile Include="CustomTaskScheduler.cs" />
     <Compile Include="ITaskResult.cs" />
     <Compile Include="Lib\ProcessTask.cs" />
     <Compile Include="Lib\QueueManger.cs" />
