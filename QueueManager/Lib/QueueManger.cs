@@ -57,6 +57,7 @@ namespace QueueManager.Lib
                     if (!_PublicPoolTask.Value.TryTake(out queueKey))
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
+
                         Console.WriteLine($"移除QueueTask 失敗");
                     }
                     else
