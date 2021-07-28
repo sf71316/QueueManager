@@ -15,7 +15,7 @@ namespace QueueManager
             QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
             string queuekey = "test";
-            int processCount = 20;
+            int processCount = 1000;
             //queueManger.EnableAddQueueAutoProcess = false;
             CustomTaskScheduler cts = new CustomTaskScheduler(int.MaxValue);
             ProcessTask processTask = new ProcessTask();
@@ -29,9 +29,9 @@ namespace QueueManager
                 var y = rnd.Next(12, 21);
                 var t = new Task<ITaskResult>(() =>
                 {
-                    ITaskResult taskResult = processTask.Execute(x, y).Result;
+                    ITaskResult taskResult = processTask.Execute(x, y);
                     return taskResult;
-                }, TaskCreationOptions.PreferFairness);
+                }, TaskCreationOptions.AttachedToParent);
                 queueManger.AddInQueue(queuekey, t);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Task id:{Task.CurrentId} waiting...");

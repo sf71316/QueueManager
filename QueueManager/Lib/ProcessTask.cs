@@ -8,10 +8,10 @@ namespace QueueManager.Lib
 {
     public class ProcessTask
     {
-        public async Task<ITaskResult> Execute(int x, int y)
+        public ITaskResult Execute(int x, int y)
         {
-            await Task.Delay(300);
-           // Console.WriteLine($"{x}+{y}={x + y}");
+            System.Threading.Thread.Sleep(10);
+            // Console.WriteLine($"{x}+{y}={x + y}");
             TaskResult tr = new TaskResult();
             tr.IsComplete = true;
             tr.message = $"{x + y}";

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -20,7 +21,6 @@ namespace QueueManager.Lib
         public bool EnableAddQueueAutoProcess { get; set; } = true;
         public void StartQueue(string queueKey)
         {
-
             //當queuetask 不存在時建立一個task 並執行
             //當queuetask 存在時且Task status 非WaitingForActivation,WaitingToRun,Running 需啟動Task
             //用lock 確保每個queuekey開會task 只會有一個
@@ -37,6 +37,7 @@ namespace QueueManager.Lib
         }
         private void ProcessQueue(string queueKey)
         {
+
             ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
             {
                 //執行Queue 裡面的task
@@ -52,6 +53,7 @@ namespace QueueManager.Lib
                             Console.WriteLine($"Process queue key [{queueKey}] task id {Thread.CurrentThread.ManagedThreadId}");
                             _task.Start();
                             _task.Wait();
+                            Console.WriteLine($"Queue count:{_queue.Count}");
                         }
                     }
                     if (!_PublicPoolTask.Value.TryTake(out queueKey))
