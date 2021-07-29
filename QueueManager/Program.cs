@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QueueManager.Case;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace QueueManager
     {
         static void Main(string[] args)
         {
-            var c = new Case2();
+            var c = new Case4();
+            //var c = new Case3();
+            //var c = new Case2();
             //var c = new Case1();
             c.Execute();
 

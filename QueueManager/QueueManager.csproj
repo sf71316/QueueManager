@@ -44,10 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Case1.cs" />
-    <Compile Include="Case2.cs" />
+    <Compile Include="Case\Case1.cs" />
+    <Compile Include="Case\Case2.cs" />
+    <Compile Include="Case\Case3.cs" />
+    <Compile Include="Case\Case4.cs" />
     <Compile Include="CustomTaskScheduler.cs" />
-    <Compile Include="ITaskResult.cs" />
+    <Compile Include="Lib\ITaskResult.cs" />
     <Compile Include="Lib\ProcessTask.cs" />
     <Compile Include="Lib\QueueManger.cs" />
     <Compile Include="Lib\TaskResult.cs" />

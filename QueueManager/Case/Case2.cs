@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace QueueManager
 {
+    /// <summary>
+    /// 模擬大量排程排入排程進行處理
+    /// </summary>
     public class Case2
     {
         public void Execute()
@@ -18,12 +21,12 @@ namespace QueueManager
             int processCount = 1000;
             //queueManger.EnableAddQueueAutoProcess = false;
             CustomTaskScheduler cts = new CustomTaskScheduler(int.MaxValue);
-            ProcessTask processTask = new ProcessTask();
+        
 
             Parallel.For(0, processCount, i =>
             {
+                ProcessTask processTask = new ProcessTask();
                 Stopwatch sw = new Stopwatch();
-
                 Random rnd = new Random(Guid.NewGuid().GetHashCode());
                 var x = rnd.Next(1, 11);
                 var y = rnd.Next(12, 21);
@@ -42,6 +45,7 @@ namespace QueueManager
                     sw.Stop();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Task id:{Task.CurrentId} receivied result {t.Result.message} elapsed:{sw.ElapsedMilliseconds}ms");
+                    sw.Reset();
                 }
             });
             //queueManger.StartQueue(queuekey);
