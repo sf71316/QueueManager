@@ -24,15 +24,26 @@ namespace QueueManager.Lib
             //當queuetask 不存在時建立一個task 並執行
             //當queuetask 存在時且Task status 非WaitingForActivation,WaitingToRun,Running 需啟動Task
             //用lock 確保每個queuekey開會task 只會有一個
-            lock (_PublicPoolTask.Value)
+            bool isLock = Monitor.TryEnter(_PublicPoolTask.Value, 5000);
+            //lock (_PublicPoolTask.Value)
+            //{
+            try
             {
                 if (!_PublicPoolTask.Value.Contains(queueKey))
                 {
                     _PublicPoolTask.Value.Add(queueKey);
                     ProcessQueue(queueKey);
                 }
-
             }
+            finally
+            {
+                if (isLock)
+                {
+                    Monitor.Exit(_PublicPoolTask.Value);
+                }
+            }
+
+            //}
 
         }
         private void ProcessQueue(string queueKey)

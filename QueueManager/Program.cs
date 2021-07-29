@@ -12,17 +12,17 @@ namespace QueueManager
         {
             var c = new Case2();
             //var c = new Case1();
+            c.Execute();
 
-           
-           
-            while ( true)
-            {
-                var ss = Console.ReadLine();
-                if (ss == "q")
-                    break;
-                c.Execute();
+            var ss = Console.ReadLine();
+            //while ( true)
+            //{
+            //    var ss = Console.ReadLine();
+            //    if (ss == "q")
+            //        break;
+            //    c.Execute();
 
-            }
+            //}
         }
     }
 }
