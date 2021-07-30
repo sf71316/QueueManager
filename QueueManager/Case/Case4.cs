@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QueueManager.Case
@@ -12,11 +13,12 @@ namespace QueueManager.Case
     {
         public void Execute()
         {
+            ThreadPool.SetMaxThreads(10, 10);
             QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
             //string queuekey = "test";
-            int processCount = 5;
-            int queueCount = 10;
+            int processCount = 10;
+            int queueCount = 5;
             //queueManger.EnableAddQueueAutoProcess = false;
             List<Task> tc = new List<Task>();
             for (int j = 0; j < queueCount; j++)
@@ -36,11 +38,11 @@ namespace QueueManager.Case
                             {
                                 ITaskResult taskResult = processTask.Execute(x, y);
                                 return taskResult;
-                            }, TaskCreationOptions.AttachedToParent);
+                            }, TaskCreationOptions.DenyChildAttach);
                             processTask.QueueKey = qk;
                             queueManger.AddInQueue(processTask.QueueKey, t);
-                            //  Console.ForegroundColor = ConsoleColor.Red;
-                            //  Console.WriteLine($"Task id:{Task.CurrentId} queue task:{processTask.QueueKey} waiting...");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"Task id:{Task.CurrentId} queue task:{processTask.QueueKey} waiting...");
                             sw.Start();
                             t.Wait();
                             sw.Stop();
@@ -61,8 +63,15 @@ namespace QueueManager.Case
                 }
             }
             //queueManger.StartQueue(queuekey);
-            Parallel.ForEach(tc, task => task.Start());
-
+            Parallel.ForEach(tc, task =>
+            {
+                task.Start();
+                //System.Threading.Thread.Sleep(200);
+            });
+            //foreach (var item in tc)
+            //{
+            //    item.Start();
+            //}
         }
         private void QueueManger_Notify(object sender, MessageArg e)
         {

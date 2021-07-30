@@ -22,8 +22,8 @@ namespace QueueManager.Case
             QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
             //string queuekey = "test";
-            int processCount = 5;
-            int processCount2 = 5;
+            int processCount = 50;
+            int processCount2 = 50;
             //queueManger.EnableAddQueueAutoProcess = false;
 
             for (int i = 0; i < processCount; i++)
@@ -39,7 +39,7 @@ namespace QueueManager.Case
                     {
                         ITaskResult taskResult = processTask.Execute(x, y);
                         return taskResult;
-                    }, TaskCreationOptions.AttachedToParent);
+                    }, TaskCreationOptions.None);
                     queueManger.AddInQueue(processTask.QueueKey, t);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Task id:{Task.CurrentId} queue task:{processTask.QueueKey} waiting...");
