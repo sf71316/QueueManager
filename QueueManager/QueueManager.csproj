@@ -48,11 +48,14 @@
     <Compile Include="Case\Case2.cs" />
     <Compile Include="Case\Case3.cs" />
     <Compile Include="Case\Case4.cs" />
+    <Compile Include="Case\Case5.cs" />
+    <Compile Include="Case\CaseBase.cs" />
     <Compile Include="CustomTaskScheduler.cs" />
     <Compile Include="Lib\ITaskResult.cs" />
     <Compile Include="Lib\ProcessTask.cs" />
     <Compile Include="Lib\QueueManger.cs" />
     <Compile Include="Lib\TaskResult.cs" />
+    <Compile Include="Lib\TestBlockingCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

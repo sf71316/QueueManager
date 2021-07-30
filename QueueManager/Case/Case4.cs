@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 
 namespace QueueManager.Case
 {
-    class Case4
+    class Case4 : CaseBase
     {
         public void Execute()
         {
-            ThreadPool.SetMaxThreads(10, 10);
             QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
             //string queuekey = "test";
             int processCount = 10;
-            int queueCount = 5;
+            int queueCount = 2;
             //queueManger.EnableAddQueueAutoProcess = false;
             List<Task> tc = new List<Task>();
             for (int j = 0; j < queueCount; j++)
@@ -66,7 +65,7 @@ namespace QueueManager.Case
             Parallel.ForEach(tc, task =>
             {
                 task.Start();
-                //System.Threading.Thread.Sleep(200);
+                System.Threading.Thread.Sleep(10);
             });
             //foreach (var item in tc)
             //{
