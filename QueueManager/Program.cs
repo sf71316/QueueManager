@@ -12,23 +12,25 @@ namespace QueueManager
     {
         static void Main(string[] args)
         {
-            
+
+            var c = new Case6();
+
             //var c = new Case5();
-            var c = new Case4();
+            //var c = new Case4();
             // var c = new Case3();
             //var c = new Case2();
             //var c = new Case1();
-            c.Execute();
+            // c.ExecuteAsync();
 
-            var ss = Console.ReadLine();
-            //while ( true)
-            //{
-            //    var ss = Console.ReadLine();
-            //    if (ss == "q")
-            //        break;
-            //    c.Execute();
+            //var ss = Console.ReadLine();
+            while (true)
+            {
+                var ss = Console.ReadLine();
+                if (ss == "q")
+                    break;
+                c.ExecuteAsync();
 
-            //}
+            }
         }
 
     }

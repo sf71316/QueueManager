@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueManager", "QueueManager\QueueManager.csproj", "{6E090BC4-274B-459C-85DF-6D6A02C77C27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueMAnager.Service", "QueueMAnager.Service\QueueMAnager.Service.csproj", "{9ECBBF8D-3AAF-4296-951E-73125A6361AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueManager.Lib", "QueueManager.Lib\QueueManager.Lib.csproj", "{91F4D881-9368-4194-BF5B-5A637CCF193C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{6E090BC4-274B-459C-85DF-6D6A02C77C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E090BC4-274B-459C-85DF-6D6A02C77C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E090BC4-274B-459C-85DF-6D6A02C77C27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ECBBF8D-3AAF-4296-951E-73125A6361AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ECBBF8D-3AAF-4296-951E-73125A6361AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ECBBF8D-3AAF-4296-951E-73125A6361AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ECBBF8D-3AAF-4296-951E-73125A6361AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F4D881-9368-4194-BF5B-5A637CCF193C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F4D881-9368-4194-BF5B-5A637CCF193C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F4D881-9368-4194-BF5B-5A637CCF193C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F4D881-9368-4194-BF5B-5A637CCF193C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

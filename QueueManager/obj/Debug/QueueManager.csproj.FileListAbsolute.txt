@@ -12,3 +12,8 @@ D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csprojAssemblyRefere
 D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CoreCompileInputs.cache
 D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.exe
 D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.pdb
+E:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.Lib.dll
+E:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.Lib.pdb
+E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CopyComplete
+E:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.dll
+E:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.xml

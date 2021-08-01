@@ -11,7 +11,7 @@ namespace QueueManager.Case
 {
     class Case4 : CaseBase
     {
-        public void Execute()
+        public override void ExecuteAsync()
         {
             //ThreadPool.SetMaxThreads(1000, 1000);
             QueueManger queueManger = new QueueManger();

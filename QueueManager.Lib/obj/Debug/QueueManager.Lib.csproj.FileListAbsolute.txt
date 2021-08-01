@@ -1,0 +1,6 @@
+E:\Project\QueueManager\QueueManager.Lib\bin\Debug\QueueManager.Lib.dll
+E:\Project\QueueManager\QueueManager.Lib\bin\Debug\QueueManager.Lib.pdb
+E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.csproj.CoreCompileInputs.cache
+E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.dll
+E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.pdb
+E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.csproj.AssemblyReference.cache
