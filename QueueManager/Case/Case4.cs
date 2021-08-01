@@ -13,13 +13,15 @@ namespace QueueManager.Case
     {
         public void Execute()
         {
+            //ThreadPool.SetMaxThreads(1000, 1000);
             QueueManger queueManger = new QueueManger();
             queueManger.Notify += QueueManger_Notify;
             //string queuekey = "test";
             int processCount = 10;
-            int queueCount = 2;
+            int queueCount = 5;
             //queueManger.EnableAddQueueAutoProcess = false;
             List<Task> tc = new List<Task>();
+            //queueManger.StartAllQueueByTask();
             for (int j = 0; j < queueCount; j++)
             {
                 var qk = j.ToString();
@@ -44,6 +46,7 @@ namespace QueueManager.Case
                             Console.WriteLine($"Task id:{Task.CurrentId} queue task:{processTask.QueueKey} waiting...");
                             sw.Start();
                             t.Wait();
+
                             sw.Stop();
                             if (t.IsCompleted)
                             {
@@ -57,7 +60,7 @@ namespace QueueManager.Case
                                 Console.WriteLine($"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             }
                             sw.Reset();
-                        })
+                        },TaskCreationOptions.DenyChildAttach)
                         );
                 }
             }
@@ -65,7 +68,7 @@ namespace QueueManager.Case
             Parallel.ForEach(tc, task =>
             {
                 task.Start();
-                System.Threading.Thread.Sleep(10);
+                // System.Threading.Thread.Sleep(6);
             });
             //foreach (var item in tc)
             //{

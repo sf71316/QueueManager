@@ -36,8 +36,10 @@ namespace QueueManager.Lib
         public ProcessTaskG2()
         {
             this.QueueKey = "G2";
-            this.MinSleepValue = 10;
-            this.MaxSleepValue = 20;
+            //this.MinSleepValue = 10;
+            //this.MaxSleepValue = 20;
+            this.MinSleepValue = 0;
+            this.MaxSleepValue = 0;
         }
     }
 }

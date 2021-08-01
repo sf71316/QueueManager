@@ -17,30 +17,30 @@ namespace QueueManager.Lib
         static Lazy<ConcurrentDictionary<string, ConcurrentQueue<Task<ITaskResult>>>> _PublicQueue =
             new Lazy<ConcurrentDictionary<string, ConcurrentQueue<Task<ITaskResult>>>>();
         //執行QueueGroup 的Task
-        static Lazy<ConcurrentDictionary<string, bool>> _PublicQueueTask =
-            new Lazy<ConcurrentDictionary<string, bool>>();
+        static Lazy<ConcurrentBag<string>> _PublicPoolTask =
+            new Lazy<ConcurrentBag<string>>();
         public bool EnableAddQueueAutoProcess { get; set; } = true;
         public void StartQueue(string queueKey)
         {
             //當queuetask 不存在時建立一個task 並執行
             //用lock 確保每個queuekey開會task 只會有一個
-            bool lockTaken = Monitor.TryEnter(_PublicQueueTask.Value, 5000);
+            bool lockTaken = Monitor.TryEnter(_PublicPoolTask.Value, 5000);
             if (lockTaken)
             {
                 try
                 {
-                    if (!_PublicQueueTask.Value.ContainsKey(queueKey))
+                    if (!_PublicPoolTask.Value.Contains(queueKey))
                     {
-                        _PublicQueueTask.Value.TryAdd(queueKey, false);
+                        _PublicPoolTask.Value.Add(queueKey);
                         //ProcessQueueByThread(queueKey);
-                        ProcessQueueByTask(queueKey);
+                        //ProcessQueueByTask(queueKey);
                     }
                 }
                 finally
                 {
                     if (lockTaken)
                     {
-                        Monitor.Exit(_PublicQueueTask.Value);
+                        Monitor.Exit(_PublicPoolTask.Value);
                     }
                 }
             }
@@ -72,8 +72,7 @@ namespace QueueManager.Lib
                             Console.WriteLine($"Queue[{queueKey}] count:{_queue.Count}");
                         }
                     }
-                    var v = false;
-                    if (!_PublicQueueTask.Value.TryRemove(queueKey, out v))
+                    if (!_PublicPoolTask.Value.TryTake(out queueKey))
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
 
@@ -143,8 +142,7 @@ namespace QueueManager.Lib
                                 Console.WriteLine($"Queue[{queueKey}] count:{_queue.Count}");
                             }
                         }
-                        var v = false;
-                        if (!_PublicQueueTask.Value.TryRemove(queueKey, out v))
+                        if (!_PublicPoolTask.Value.TryTake(out queueKey))
                         {
                             Console.ForegroundColor = ConsoleColor.Blue;
 
@@ -157,66 +155,45 @@ namespace QueueManager.Lib
                         }
                     }
                 }
-            }, TaskCreationOptions.DenyChildAttach);//.ConfigureAwait(false);
+            }, TaskCreationOptions.LongRunning);//.ConfigureAwait(false);
 
         }
         public void StartAllQueueByTask()
         {
-            bool lockTaken = Monitor.TryEnter(_PublicQueueTask.Value, 5000);
-            if (lockTaken)
+            Task.Factory.StartNew(() =>
             {
-                try
+                while (true)
                 {
-                    Task.Factory.StartNew(() =>
+                    //執行Queue 裡面的task
+                    ConcurrentQueue<Task<ITaskResult>> _queue;
+                    if (_PublicQueue.Value.TryGetValue(queueKey, out _queue))
                     {
-                        while (true)
+                        while (!_queue.IsEmpty)
                         {
-                            var readytoRunTask = _PublicQueueTask.Value.Where(p => !p.Value);
-                            foreach (var qTask in readytoRunTask)
+                            Task<ITaskResult> _task;
+                            if (_queue.TryDequeue(out _task))
                             {
-                                Task.Factory.StartNew(() =>
-                                {
-                                    while (true)
-                                    {
-                                        //執行Queue 裡面的task
-                                        ConcurrentQueue<Task<ITaskResult>> _queue;
-                                        if (_PublicQueue.Value.TryGetValue(qTask.Key, out _queue))
-                                        {
-                                            while (!_queue.IsEmpty)
-                                            {
-                                                Task<ITaskResult> _task;
-                                                if (_queue.TryDequeue(out _task))
-                                                {
-                                                    Console.ForegroundColor = ConsoleColor.Blue;
-                                                    Console.WriteLine($"Process queue key [{qTask.Key}] task id {Task.CurrentId}");
-                                                    _task.Start();
-                                                    _task.Wait();
-                                                    Console.WriteLine($"Queue[{qTask.Key}] count:{_queue.Count}");
-                                                }
-                                            }
-
-                                        }
-                                    }
-                                }, TaskCreationOptions.LongRunning);//.ConfigureAwait(false);
-                                _PublicQueueTask.Value.AddOrUpdate(qTask.Key, true, (p1, p2) => true);
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Console.WriteLine($"Process queue key [{queueKey}] task id {Task.CurrentId}");
+                                _task.Start();
+                                _task.Wait();
+                                Console.WriteLine($"Queue[{queueKey}] count:{_queue.Count}");
                             }
                         }
-                    });
-                }
-                finally
-                {
-                    if (lockTaken)
-                    {
-                        Monitor.Exit(_PublicQueueTask.Value);
+                        if (!_PublicPoolTask.Value.TryTake(out queueKey))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Blue;
+
+                            Console.WriteLine($"移除QueueTask [{queueKey}] 失敗");
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.WriteLine($"移除QueueTask [{queueKey}] 成功");
+                        }
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine("not get queue task lock....................");
-            }
-
-
+            }, TaskCreationOptions.LongRunning);//.ConfigureAwait(false);
 
         }
         public void AddInQueue(string queueKey, Task<ITaskResult> task)
