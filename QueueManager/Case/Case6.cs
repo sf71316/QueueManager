@@ -23,101 +23,107 @@ namespace QueueManager.Case
             string uri = "https://localhost:44369/api/Queue";
             ConcurrentBag<TaskResult> results = new ConcurrentBag<TaskResult>();
             ConcurrentBag<Task> tc = new ConcurrentBag<Task>();
+            int tindex = 1;
             for (int i = 0; i < 20; i++)
             {
-
-                // Task t = new Task((() =>
-                //{
-                //    //Stopwatch sw = new Stopwatch();
-                //    RestClient client = new RestClient();
-                //    client.BaseUrl = new Uri(uri);
-                //    try
-                //    {
-                //        Random rnd = new Random(Guid.NewGuid().GetHashCode());
-                //        var x = rnd.Next(1, 11);
-                //        var y = rnd.Next(12, 21);
-                //        QueueModel model = new QueueModel();
-                //        model.TaskId = Task.CurrentId.ToString();
-                //        model.QueueKey = "test";
-                //        model.X = x;
-                //        model.Y = y;
-                //        Console.WriteLine($"TaskId:{Task.CurrentId} send request");
-                //        //sw.Start();
-                //        //client.Timeout = TimeSpan.FromSeconds(30);
-                //        // 將 data 轉為 json
-                //        var request = new RestRequest("", Method.POST);
-                //        request.AddJsonBody(model);
-                //        // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
-                //        //HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
-                //        //HttpResponseMessage response = client.PostAsync(uri, contentPost).Result;
-                //        //response.EnsureSuccessStatusCode();
-                //        var responseBody = client.Post(request);
-
-                //        results.Add(JsonConvert.DeserializeObject<TaskResult>(responseBody.Content));
-                //        //sw.Stop();
-                //        //Console.WriteLine(responseBody);
-                //        Console.WriteLine($"TaskId:{Task.CurrentId} receivied result:{responseBody.Content}");
-                //        //sw.Reset();
-                //    }
-                //    catch (HttpRequestException e)
-                //    {
-                //        Console.WriteLine("\nException Caught!");
-                //        Console.WriteLine("Message :{0} ", e.Message);
-                //    }
-
-                //}));
-                // tc.Add(t);
-                // t.Start();
+                #region Restsharp
                 Task t = new Task((() =>
-              {
-                  //Stopwatch sw = new Stopwatch();
-                  HttpClientHandler httpClientHandler = new HttpClientHandler();
-                  httpClientHandler.MaxAutomaticRedirections = int.MaxValue;
-                  httpClientHandler.MaxRequestContentBufferSize = int.MaxValue;
-                  httpClientHandler.MaxConnectionsPerServer = int.MaxValue;
-                  
-                  using (HttpClient client = new HttpClient(httpClientHandler))
-                  {
-                      try
-                      {
-                          Random rnd = new Random(Guid.NewGuid().GetHashCode());
-                          var x = rnd.Next(1, 11);
-                          var y = rnd.Next(12, 21);
-                          QueueModel model = new QueueModel();
-                          model.TaskId = Task.CurrentId.ToString();
-                          model.QueueKey = "test";
-                          model.X = x;
-                          model.Y = y;
-                          Console.WriteLine($"TaskId:{Task.CurrentId} send request");
-                          //sw.Start();
-                          // 將 data 轉為 json
-                          string json = JsonConvert.SerializeObject(model);
-                          // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
-                          HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
+               {
+                   //Stopwatch sw = new Stopwatch();
+                   RestClient client = new RestClient();
+                   client.BaseUrl = new Uri(uri);
+                   try
+                   {
+                       Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                       var x = rnd.Next(1, 11);
+                       var y = rnd.Next(12, 21);
+                       QueueModel model = new QueueModel();
 
-                          var st =  client.PostAsync(uri, contentPost);
-                    
-                          
-                          HttpResponseMessage response = st.Result;
-                          //response.EnsureSuccessStatusCode();
-                          string responseBody = response.Content.ReadAsStringAsync().Result;
-                          results.Add(JsonConvert.DeserializeObject<TaskResult>(responseBody));
-                          //sw.Stop();
-                          //Console.WriteLine(responseBody);
-                          Console.WriteLine($"TaskId:{Task.CurrentId} receivied result:{responseBody}");
-                          //sw.Reset();
-                      }
-                      catch (HttpRequestException e)
-                      {
-                          Console.WriteLine("\nException Caught!");
-                          Console.WriteLine("Message :{0} ", e.Message);
-                      }
-                      httpClientHandler.Dispose();
-                  }
-              }));
+                       model.ProcessId = $"Processid:{tindex++}";
+                       model.QueueKey = "test";
+                       model.X = x;
+                       model.Y = y;
+                       Console.WriteLine($"TaskId:{Task.CurrentId} send request");
+                       //sw.Start();
+                       //client.Timeout = TimeSpan.FromSeconds(30);
+                       // 將 data 轉為 json
+                       var request = new RestRequest("", Method.POST);
+                       request.AddJsonBody(model);
+                       // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
+                       //HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
+                       //HttpResponseMessage response = client.PostAsync(uri, contentPost).Result;
+                       //response.EnsureSuccessStatusCode();
+                       var responseBody = client.Post(request);
+
+                       results.Add(JsonConvert.DeserializeObject<TaskResult>(responseBody.Content));
+                       //sw.Stop();
+                       //Console.WriteLine(responseBody);
+                       Console.WriteLine($"TaskId:{model.ProcessId} receivied result:{responseBody.Content}");
+                       //sw.Reset();
+                   }
+                   catch (HttpRequestException e)
+                   {
+                       Console.WriteLine("\nException Caught!");
+                       Console.WriteLine("Message :{0} ", e.Message);
+                   }
+
+               }));
                 tc.Add(t);
                 t.Start();
+                #endregion
 
+                #region Httpclient 
+
+                //  Task t = new Task((() =>
+                //{
+                //    //Stopwatch sw = new Stopwatch();
+                //    HttpClientHandler httpClientHandler = new HttpClientHandler();
+                //    httpClientHandler.MaxAutomaticRedirections = int.MaxValue;
+                //    httpClientHandler.MaxRequestContentBufferSize = int.MaxValue;
+                //    httpClientHandler.MaxConnectionsPerServer = int.MaxValue;
+
+                //    using (HttpClient client = new HttpClient(httpClientHandler))
+                //    {
+                //        try
+                //        {
+                //            Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                //            var x = rnd.Next(1, 11);
+                //            var y = rnd.Next(12, 21);
+                //            QueueModel model = new QueueModel();
+                //            model.TaskId = Task.CurrentId.ToString();
+                //            model.QueueKey = "test";
+                //            model.X = x;
+                //            model.Y = y;
+                //            Console.WriteLine($"TaskId:{Task.CurrentId} send request");
+                //            //sw.Start();
+                //            // 將 data 轉為 json
+                //            string json = JsonConvert.SerializeObject(model);
+                //            // 將轉為 string 的 json 依編碼並指定 content type 存為 httpcontent
+                //            HttpContent contentPost = new StringContent(json, Encoding.UTF8, "application/json");
+
+                //            var st = client.PostAsync(uri, contentPost);
+
+
+                //            HttpResponseMessage response = st.Result;
+                //            //response.EnsureSuccessStatusCode();
+                //            string responseBody = response.Content.ReadAsStringAsync().Result;
+                //            results.Add(JsonConvert.DeserializeObject<TaskResult>(responseBody));
+                //            //sw.Stop();
+                //            //Console.WriteLine(responseBody);
+                //            Console.WriteLine($"TaskId:{Task.CurrentId} receivied result:{responseBody}");
+                //            //sw.Reset();
+                //        }
+                //        catch (HttpRequestException e)
+                //        {
+                //            Console.WriteLine("\nException Caught!");
+                //            Console.WriteLine("Message :{0} ", e.Message);
+                //        }
+                //        httpClientHandler.Dispose();
+                //    }
+                //}));
+                //  tc.Add(t);
+                //  t.Start();
+                #endregion
             }
             //foreach (var item in tc)
             //{
