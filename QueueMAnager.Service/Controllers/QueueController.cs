@@ -1,6 +1,7 @@
 ﻿using QueueManager.Lib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -24,6 +25,7 @@ namespace QueueMAnager.Service.Controllers
             QueueManger queueManger = new QueueManger();
             ProcessTaskG2 g2 = new ProcessTaskG2();
             g2.QueueKey = value.QueueKey;
+            Debug.WriteLine($"Receivid client task:{value.TaskId}");
             var t = new Task<ITaskResult>(() =>
             {
                 ITaskResult taskResult = g2.Execute(value.X, value.Y);

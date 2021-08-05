@@ -17,3 +17,10 @@ E:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.Lib.pdb
 E:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CopyComplete
 E:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.dll
 E:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.xml
+D:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.dll
+D:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.Lib.dll
+D:\Project\QueueManager\QueueManager\bin\Debug\QueueManager.Lib.pdb
+D:\Project\QueueManager\QueueManager\bin\Debug\Newtonsoft.Json.xml
+D:\Project\QueueManager\QueueManager\obj\Debug\QueueManager.csproj.CopyComplete
+D:\Project\QueueManager\QueueManager\bin\Debug\RestSharp.dll
+D:\Project\QueueManager\QueueManager\bin\Debug\RestSharp.xml

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace QueueManager.Lib
 {
@@ -32,7 +33,8 @@ namespace QueueManager.Lib
                     {
                         _PublicPoolTask.Value.Add(queueKey);
                         //ProcessQueueByThread(queueKey);
-                        ProcessQueueByTask(queueKey);
+                        //  ProcessQueueByTask(queueKey);
+                        ProcessQueueByHosting(queueKey);
                     }
                 }
                 finally
@@ -115,7 +117,38 @@ namespace QueueManager.Lib
             //}));
 
         }
+        private void ProcessQueueByHosting(string queueKey)
+        {
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
+            {
+                //執行Queue 裡面的task
+                ConcurrentQueue<Task<ITaskResult>> _queue;
+                if (_PublicQueue.Value.TryGetValue(queueKey, out _queue))
+                {
+                    while (!_queue.IsEmpty)
+                    {
+                        Task<ITaskResult> _task;
+                        if (_queue.TryDequeue(out _task))
+                        {
+                            Debug.WriteLine($"Process queue key [{queueKey}] task id {Task.CurrentId}");
+                            _task.Start();
+                            _task.Wait();
+                            Debug.WriteLine($"Queue[{queueKey}] count:{_queue.Count}");
+                        }
+                    }
+                    if (!_PublicPoolTask.Value.TryTake(out queueKey))
+                    {
 
+                        Debug.WriteLine($"移除QueueTask [{queueKey}] 失敗");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"移除QueueTask [{queueKey}] 成功");
+                    }
+                }
+            });
+
+        }
         private void ProcessQueueByTask(string queueKey)
         {
             Task.Factory.StartNew(() =>
