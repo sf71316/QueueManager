@@ -8,6 +8,6 @@ namespace QueueManager.Case
 {
     public abstract class CaseBase
     {
-        public abstract void ExecuteAsync();
+        public abstract void ExecuteAsync(string cmd = "");
     }
 }

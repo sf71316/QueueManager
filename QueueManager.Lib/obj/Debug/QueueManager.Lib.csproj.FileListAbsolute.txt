@@ -6,7 +6,6 @@ E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.pdb
 E:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.csproj.AssemblyReference.cache
 D:\Project\QueueManager\QueueManager.Lib\bin\Debug\QueueManager.Lib.dll
 D:\Project\QueueManager\QueueManager.Lib\bin\Debug\QueueManager.Lib.pdb
-D:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.csprojAssemblyReference.cache
 D:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.csproj.CoreCompileInputs.cache
 D:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.dll
 D:\Project\QueueManager\QueueManager.Lib\obj\Debug\QueueManager.Lib.pdb

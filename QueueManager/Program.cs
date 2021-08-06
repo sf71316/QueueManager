@@ -28,7 +28,7 @@ namespace QueueManager
                 var ss = Console.ReadLine();
                 if (ss == "q")
                     break;
-                c.ExecuteAsync();
+                c.ExecuteAsync(ss);
 
             }
         }
